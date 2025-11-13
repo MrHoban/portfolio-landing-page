@@ -9,23 +9,6 @@ Your connection string from MongoDB Atlas needs to be formatted correctly for th
 2. **Database name**: Add the database name to the connection string
 3. **Connection options**: Add retry options for better reliability
 
-### Your Current Connection String:
-```
-mongodb+srv://joshuahobandb:Ilovedad@20052306@cluster-portfolio.ewxrccw.mongodb.net/?appName=Cluster-Portfolio
-```
-
-### Corrected Format for .env file:
-
-**Option 1: If password is `Ilovedad@20052306`** (with @ symbol):
-```
-MONGO_URI=mongodb+srv://joshuahobandb:Ilovedad%4020052306@cluster-portfolio.ewxrccw.mongodb.net/portfolio_db?retryWrites=true&w=majority
-```
-
-**Option 2: If password doesn't have @ symbol**:
-```
-MONGO_URI=mongodb+srv://joshuahobandb:Ilovedad@20052306@cluster-portfolio.ewxrccw.mongodb.net/portfolio_db?retryWrites=true&w=majority
-```
-
 ## Steps to Update:
 
 1. Open `backend/.env` file
