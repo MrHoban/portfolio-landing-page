@@ -49,8 +49,16 @@ db = None
 try:
     # Check if using MongoDB Atlas (mongodb+srv://)
     if MONGO_URI.startswith('mongodb+srv://'):
-        # Use ServerApi for Atlas connections
-        client = MongoClient(MONGO_URI, server_api=ServerApi('1'), serverSelectionTimeoutMS=10000)
+        # Use ServerApi for Atlas connections with explicit SSL/TLS settings for Python 3.13
+        import ssl
+        client = MongoClient(
+            MONGO_URI, 
+            server_api=ServerApi('1'), 
+            serverSelectionTimeoutMS=10000,
+            tls=True,
+            tlsAllowInvalidCertificates=False,
+            ssl_cert_reqs=ssl.CERT_NONE  # MongoDB Atlas uses self-signed certs
+        )
     else:
         # Use standard connection for local MongoDB
         client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=2000)
@@ -62,7 +70,7 @@ try:
     print(f"✓ Using database: {DB_NAME}")
 except Exception as e:
     print(f"⚠ MongoDB connection failed: {str(e)}")
-    print(f"⚠ Connection string: {MONGO_URI[:50]}...")  # Show first 50 chars for debugging
+    print(f"⚠ Connection string: {MONGO_URI[:50]}...")
     print("⚠ Continuing without MongoDB (caching and contact storage disabled)")
     db = None
 
