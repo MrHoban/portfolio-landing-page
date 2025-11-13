@@ -9,6 +9,7 @@ from datetime import datetime
 import json
 import feedparser
 import re
+import certifi
 
 # Load .env file from the backend directory
 env_path = os.path.join(os.path.dirname(__file__), '.env')
@@ -49,21 +50,21 @@ db = None
 try:
     # Check if using MongoDB Atlas (mongodb+srv://)
     if MONGO_URI.startswith('mongodb+srv://'):
-        # Use ServerApi for Atlas connections with explicit SSL/TLS settings for Python 3.13
-        import ssl
+        # For Python 3.13, use certifi for proper CA certificate handling
+        # This helps with SSL/TLS handshake issues
         client = MongoClient(
             MONGO_URI, 
-            server_api=ServerApi('1'), 
-            serverSelectionTimeoutMS=10000,
-            tls=True,
-            tlsAllowInvalidCertificates=False,
-            ssl_cert_reqs=ssl.CERT_NONE  # MongoDB Atlas uses self-signed certs
+            server_api=ServerApi('1'),
+            serverSelectionTimeoutMS=15000,
+            connectTimeoutMS=15000,
+            socketTimeoutMS=15000,
+            tlsCAFile=certifi.where()  # Use certifi's CA bundle for Python 3.13 compatibility
         )
     else:
         # Use standard connection for local MongoDB
         client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=2000)
     
-    # Test connection
+    # Test connection with a simple ping
     client.admin.command('ping')
     db = client[DB_NAME]
     print("✓ MongoDB connected successfully")
