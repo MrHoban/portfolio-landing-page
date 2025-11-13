@@ -274,6 +274,21 @@ def get_blog_posts():
         print(f"Error fetching blog posts: {str(e)}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/', methods=['GET'])
+def root():
+    """Root endpoint - API information"""
+    return jsonify({
+        'message': 'Portfolio API',
+        'version': '1.0.0',
+        'endpoints': {
+            'repos': '/api/repos',
+            'blog': '/api/blog',
+            'contact': '/api/contact',
+            'resume': '/api/resume',
+            'health': '/api/health'
+        }
+    }), 200
+
 @app.route('/api/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
